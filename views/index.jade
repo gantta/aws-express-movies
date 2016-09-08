@@ -1,0 +1,71 @@
+extends layout
+
+block content
+  div(class="container")
+    div(class="header")
+      ul(class="nav nav-pills pull-right")
+        li(class="active")
+          a(href="#") Home
+        li
+          a(href="./search") Search
+        li
+          a(href="./list") List Movies
+      h3(class="text-muted") A New Movie
+    div(id="addSuccess", class="alert alert-success", style="display:none")
+      p(id="addSuccessText") Thanks for adding a new movie!
+    div(id="addDuplicate", class="alert alert-success", style="display:none")
+      p(id="addDuplicateText") Fear not, your movie is already in our list.
+    div(id="addError", class="alert alert-info", style="display:none")
+      p(id="addErrorText") Well this is embarrassing. It looks like we're having trouble adding your movie.
+    div(class="jumbotron")
+      h1 The next big movie is coming!
+      p(class="lead") We're giving away free swag!! Add your movie to our list...
+      p
+        a(class="btn btn-lg btn-success", data-toggle="modal", href="#addModal") Signup today
+    
+    div(class="footer")
+      p &copy; A New Movie 2013
+      
+    // Modal
+    div(class="modal fade", id="addModal", tabindex="-1", role="dialog", aria-labelledby="addModal", aria-hidden="true")
+      div(class="modal-dialog")
+        div(class="modal-content")
+          div(class="modal-header")
+            button(type="button", class="close", data-dismiss="modal", aria-hidden="true") &times;
+            h4(class="modal-title") Provide a few details and we'll be in touch...
+          div(class="modal-body")
+            form(id="addForm", role="form")
+              input(type="hidden", id="theme", name="theme", value="flatly")
+              div(class="form-group")
+                label(for="year") Year
+                input(type="text", class="form-control", id="year", name="year", placeholder="Year Released")
+              div(class="form-group")
+                label(for="title") Title
+                input(type="text", class="form-control", id="title", name="title", placeholder="Your movie title")
+          div(class="modal-footer")
+            button(id="addMovieButton", type="button", class="btn btn-primary") Sign Up!
+  //script(src="../static/jquery/jquery.js")
+  script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js")
+  script(src="../static/bootstrap/js/bootstrap.min.js")
+  script.
+    $(document).ready(function() {
+      $("#addMovieButton").click(function() {
+        $.post( "/addnew", $("#addForm").serialize(),
+                function(data) {
+                  $("#addSuccess").show();
+                }
+              )
+              .error(function(xhr) {
+                switch(xhr.status) {
+                  case 409:
+                    $("#addDuplicate").show();
+                    break;
+                  default:
+                    $("#addError").show();
+                }
+              })
+              .always(function() {
+                $("#addModal").modal('hide');
+              });
+      })
+    })
