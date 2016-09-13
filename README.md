@@ -1,2 +1,4 @@
 # aws-express-movies
-A sample Express app running on AWS DynamoDB
+A small Node.js web app sitting on top of AWS. 
+
+Utilizes Express framework and Jade rendering HTML.
